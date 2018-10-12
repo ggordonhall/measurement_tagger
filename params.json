@@ -1,0 +1,12 @@
+{
+    "d": {
+        "container": "Distance",
+        "tagger": "DistanceTagger",
+        "formatter": "DistanceFormatter"
+    },
+    "w": {
+        "container": "Weight",
+        "tagger": "WeightTagger",
+        "formatter": "WeightFormatter"
+    }
+}
