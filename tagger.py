@@ -1,49 +1,29 @@
-from typing import List, Set, Tuple, Union, Optional
+from typing import List, Set, Dict, Tuple, Union, Optional
 
 import spacy
-from nltk.corpus import wordnet as wn
-
-from utils import flatten
-
-
-DISTANCE_SYNSET = 'linear_unit.n.01'
 
 
 class Tagger:
-    """Base tagging class."""
-
-    def tag(self, sentence: List[spacy.tokens.Span]):
-        """Tags a Spacy tokenised sentence.
-
-        Arguments:
-            sentence {List[spacy.tokens.Span]} -- tokens to tag
-        """
-        raise NotImplementedError
-
-
-class DistanceTagger(Tagger):
-    """Use the WordNet graph to extract sentences
-    containing distance measurements.
+    """Use the WordNet graph to extract measurements.
 
     Arguments:
-        tags: {Set[str]} -- distance lemma tags to match
+        tags: {Set[str]} -- lemma tags to match
+        right_mod_tokens: {Dict[str, str]} --
+            tokens mapped to their corresponding right modifier
     """
 
-    def __init__(self):
-        super(DistanceTagger, self).__init__()
-        self._tags = hyponyms(DISTANCE_SYNSET)
+    def __init__(self, tags: Set[str], right_mod_tokens: Dict[str, str]):
+        self._tags = tags
+        self._right_mod_tokens = right_mod_tokens
         self._dep_modifiers = frozenset(['nummod', 'quantmod'])
-        # tokens which might have a modifier to their right
-        self._right_mod_tokens = {'foot': 'inch'}
 
     def tag(self, sentence: List[spacy.tokens.Span]) -> Optional[
             List[Tuple[str, str]]]:
-        """Takes a Spacy tokenised sentence and extracts
-        distance measurements.
+        """Extract measurements from Spacy tokenised sentence.
 
         Arguments:
-            sentence {List[spacy.tokens.Span]} - - the tokenised sentence to
-                                                    extract measurements from
+            sentence {List[spacy.tokens.Span]} - - a tokenised sentence
+
         Returns:
             {Optional[List[Tuple[str, str]]]} - -
                 a list of tuples of(numerical modifiers and tokens) or None
@@ -88,8 +68,8 @@ class DistanceTagger(Tagger):
 
         Arguments:
             token {spacy.tokens.Token} - - a measurement Token
-            direction {Union['l', 'r']} - - the direction to search the tree
-                                            (left, right)
+            direction {Union['l', 'r']} - -
+                the direction to search the tree (left, right)
 
         Returns:
             {Optional[str]} - - the modifier's lemma
@@ -102,24 +82,9 @@ class DistanceTagger(Tagger):
         return None
 
     @property
-    def distance_tags(self):
+    def tags(self):
         return self._tags
 
     @property
     def dependency_modifiers(self):
         return self._dep_modifiers
-
-
-def hyponyms(synset_name: str) -> Set[str]:
-    """Given a WordNet synset name, return the lemmas of
-    all its hyponyms in the WordNet semantic graph.
-
-    Arguments:
-        synset_name {str} -- a high-level synset
-
-    Returns:
-        {Set[str]} -- set of hyponyms
-    """
-    synset = wn.synset(synset_name)
-    hypos = list(synset.closure(lambda s: s.hyponyms()))
-    return set(flatten([synset.lemma_names() for synset in hypos]))

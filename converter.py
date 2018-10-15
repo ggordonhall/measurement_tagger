@@ -6,7 +6,7 @@ from utils import two_round
 class Converter:
     """Class to convert units to standard metric form."""
 
-    def __init__(self, measurement_container):
+    def __init__(self, measurement_container, return_unconverted=False):
         """Set up measurement converter according to
         type of measurement container passed. Establish its
         standard unit to convert measurements to.
@@ -19,6 +19,7 @@ class Converter:
 
         self._container = measurement_container
         self._standard_unit = self._container.STANDARD_UNIT
+        self._return_unconverted = return_unconverted
 
     def convert(self, measurements: List[Tuple[str, str]]) -> List[Tuple[str, str]]:
         """Convert list of measurements (value, unit) to standard form.
@@ -37,7 +38,10 @@ class Converter:
                 value = self._container.default_units({unit: value})[0]
                 conv_measure = (two_round(value), self._standard_unit)
                 converted.append(conv_measure)
-            except ValueError:
-                converted.append(measure)
+            except (ValueError, AttributeError):
+                if self._return_unconverted:
+                    converted.append(measure)
+                else:
+                    pass
 
         return converted

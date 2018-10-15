@@ -1,12 +1,22 @@
 {
     "d": {
         "container": "Distance",
-        "tagger": "DistanceTagger",
-        "formatter": "DistanceFormatter"
+        "formatter": "DistanceFormatter",
+        "synset": "linear_unit.n.01",
+        "right_mods": {
+            "foot": "inch"
+        }
     },
-    "w": {
-        "container": "Weight",
-        "tagger": "WeightTagger",
-        "formatter": "WeightFormatter"
+    "m": {
+        "container": "Mass",
+        "formatter": "MassFormatter",
+        "synset": "mass_unit.n.01",
+        "right_mods": {}
+    },
+    "t": {
+        "container": "Time",
+        "formatter": "TimeFormatter",
+        "synset": "time_unit.n.01",
+        "right_mods": {}
     }
 }
