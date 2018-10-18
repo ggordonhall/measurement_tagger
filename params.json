@@ -18,5 +18,17 @@
         "formatter": "TimeFormatter",
         "synset": "time_unit.n.01",
         "right_mods": {}
+    },
+    "e": {
+        "container": "Energy",
+        "formatter": "EnergyFormatter",
+        "synset": "energy_unit.n.01",
+        "right_mods": {}
+    },
+    "v": {
+        "container": "Volume",
+        "formatter": "VolumeFormatter",
+        "synset": "volume_unit.n.01",
+        "right_mods": {}
     }
 }

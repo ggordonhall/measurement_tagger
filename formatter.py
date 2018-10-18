@@ -1,6 +1,6 @@
-import re
-from typing import List
+"""Sentence formatter"""
 
+import re
 from utils import flatten, map_funcs, strip_list
 
 
@@ -10,7 +10,7 @@ class Formatter:
     def __init__(self):
         self._replace_funcs = []
 
-    def format(self, line: str) -> str:
+    def format(self, line):
         """Format line of text for tagging.
         Apply specialised replacement functions.
 
@@ -20,11 +20,11 @@ class Formatter:
         Returns:
             line {str} -- formatted line
         """
-        tokens = strip_list(line.split())
+        tokens = strip_list(line.lower().split())
         split_toks = flatten([split_numerals(tok) for tok in tokens])
         replace_toks = [map_funcs(tok, self._replace_funcs)
                         for tok in split_toks]
-        return ' '.join(strip_list(replace_toks))
+        return ' '.join(replace_toks)
 
 
 class DistanceFormatter(Formatter):
@@ -50,12 +50,31 @@ class TimeFormatter(Formatter):
 
     def __init__(self):
         super(TimeFormatter, self).__init__()
+        self._replace_funcs = [remove_commas,
+                               remove_quarter,
+                               remove_moon]
+
+
+class VolumeFormatter(Formatter):
+    """Format text for volume tagging."""
+
+    def __init__(self):
+        super(VolumeFormatter, self).__init__()
+        self._replace_funcs = [remove_commas,
+                               remove_quarter]
+
+
+class EnergyFormatter(Formatter):
+    """Format text for energy tagging."""
+
+    def __init__(self):
+        super(EnergyFormatter, self).__init__()
         self._replace_funcs = [remove_commas]
 
 
 ### GENERAL REPLACEMENT FUNCTIONS ###
 
-def split_numerals(token: str) -> List[str]:
+def split_numerals(token):
     """Split conjoined alphanumeric strings.
     e.g. "aa1" -> ["aa", "1"]
 
@@ -71,7 +90,7 @@ def split_numerals(token: str) -> List[str]:
     return [g for g in match.groups() if g] if match else [token]
 
 
-def remove_commas(token: str) -> str:
+def remove_commas(token):
     """Remove commas in numbers.
     e.g. "5,000" -> "5000"
 
@@ -90,7 +109,7 @@ def remove_commas(token: str) -> str:
 
 ### DISTANCE REPLACEMENT FUNCTIONS ###
 
-def replace_feet_inches(token: str) -> str:
+def replace_feet_inches(token):
     """Replace punctuations marks for feet and inches with words.
     e.g. 5'7" -> 5 foot 7 inch
         3' -> 3 foot
@@ -111,7 +130,7 @@ def replace_feet_inches(token: str) -> str:
     return token
 
 
-def replace_ft(token: str) -> str:
+def replace_ft(token):
     """Normalise ft tokens.
     e.g. "ft" -> "foot"
 
@@ -122,3 +141,38 @@ def replace_ft(token: str) -> str:
         {str} -- a replaced string
     """
     return 'foot' if token == 'ft' else token
+
+
+### TIME REPLACEMENT FUNCTIONS ###
+
+def remove_moon(token):
+    """Remove `moon`, an archaic unit
+    of time which confuses the tagger.
+
+    Arguments:
+        token {str} -- a string to replace
+
+    Returns:
+        {str} -- a replaced string
+    """
+
+    moon = ["moon", "moons"]
+    return "" if token in moon else token
+
+
+### OTHER REPLACEMENT FUNCTIONS ###
+
+def remove_quarter(token):
+    """Remove `quarter`, a unit
+    of volume or time which confuses the tagger.
+
+    Arguments:
+        token {str} -- a string to replace
+
+    Returns:
+        {str} -- a replaced string
+    """
+
+    pred_a = token in ["quarter", "quarters"]
+    pred_b = "-quarter" in token
+    return "" if pred_a or pred_b else token

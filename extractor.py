@@ -1,12 +1,10 @@
+"""Extractor pipeline"""
+
 import os
-
-from formatter import Formatter
 from loader import SentenceLoader
-from tagger import Tagger
-from converter import Converter
 
 
-class Extracter:
+class Extractor:
     """Measurement tagging pipeline class.
 
     Raises:
@@ -19,7 +17,7 @@ class Extracter:
         converter {Converter} -- number conversion class
     """
 
-    def __init__(self, path: str, tagger: Tagger, formatter: Formatter, converter: Converter):
+    def __init__(self, path, tagger, formatter, converter):
         if not os.path.exists(path):
             raise FileExistsError("Invalid filepath! {}".format(path))
 

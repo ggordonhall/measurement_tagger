@@ -1,8 +1,10 @@
+"""Helper functions"""
+
 from functools import reduce
 from itertools import chain
 from importlib import import_module
 
-from typing import List, Set, Any, Callable
+from typing import List, Any, Callable
 
 from nltk.corpus import wordnet as wn
 
@@ -38,7 +40,7 @@ def get_class(module: str, class_: str) -> Any:
     return clazz()
 
 
-def hyponyms(synset_name: str) -> Set[str]:
+def hyponyms(synset_name):
     """Given a WordNet synset name, return the lemmas of
     all its hyponyms in the WordNet semantic graph.
 

@@ -1,4 +1,4 @@
-from typing import List, Tuple
+"""Converter class"""
 
 from utils import two_round
 
@@ -13,15 +13,14 @@ class Converter:
 
         Arguments:
             measurement_container {measurement.measures} --
-                                measurement container from the Python
-                                `measurement' library
+                measurement container from the Python `measurement' library
         """
 
         self._container = measurement_container
         self._standard_unit = self._container.STANDARD_UNIT
         self._return_unconverted = return_unconverted
 
-    def convert(self, measurements: List[Tuple[str, str]]) -> List[Tuple[str, str]]:
+    def convert(self, measurements):
         """Convert list of measurements (value, unit) to standard form.
 
         Arguments:

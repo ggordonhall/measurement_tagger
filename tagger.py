@@ -1,6 +1,4 @@
-from typing import List, Set, Dict, Tuple, Union, Optional
-
-import spacy
+"""Tagging class"""
 
 
 class Tagger:
@@ -12,13 +10,12 @@ class Tagger:
             tokens mapped to their corresponding right modifier
     """
 
-    def __init__(self, tags: Set[str], right_mod_tokens: Dict[str, str]):
+    def __init__(self, tags, right_mod_tokens):
         self._tags = tags
         self._right_mod_tokens = right_mod_tokens
         self._dep_modifiers = frozenset(['nummod', 'quantmod'])
 
-    def tag(self, sentence: List[spacy.tokens.Span]) -> Optional[
-            List[Tuple[str, str]]]:
+    def tag(self, sentence):
         """Extract measurements from Spacy tokenised sentence.
 
         Arguments:
@@ -37,8 +34,7 @@ class Tagger:
                     measurements.extend(modifier)
         return measurements if measurements else None
 
-    def _measurements(self, token: spacy.tokens.Token) -> Optional[
-            List[Tuple[str, str]]]:
+    def _measurements(self, token):
         """Given a token, gets its modifiers to its left and right.
 
         Arguments:
@@ -61,8 +57,7 @@ class Tagger:
                     (right_mod, self._right_mod_tokens[token.lemma_]))
         return modifiers
 
-    def _find_mod(self, direction: Union['l', 'r'],
-                  token: spacy.tokens.Token) -> Optional[str]:
+    def _find_mod(self, direction, token):
         """Given a token, search the dependency tree towards 'direction'
         for its numerical modifier.
 

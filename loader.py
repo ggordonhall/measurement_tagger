@@ -1,8 +1,7 @@
-from typing import List
+"""Sentence iterator"""
 
 import spacy
-
-from utils import flatten
+from tqdm import tqdm
 
 
 class SentenceLoader:
@@ -13,34 +12,35 @@ class SentenceLoader:
         filepath {str} -- path to a text file to load
     """
 
-    def __init__(self, formatter, filepath: str):
-        self._nlp = spacy.load('en')
+    def __init__(self, formatter, filepath):
+        self._nlp = spacy.load('en', disable=['tagger', 'ner'])
         self._formatter = formatter
+        self._filepath = filepath
 
-        with open(filepath, 'r') as f:
-            lines = f.readlines()
-            lines = [self._formatter.format(line) for line in lines]
+    def _line_iter(self):
+        """Read and format lines in the file.
 
-        self._sentences = flatten([self._tokenise(line) for line in lines])
-
-    def _tokenise(self, line: str) -> List[spacy.tokens.Span]:
-        """Use the Spacy tokeniser to split a
-        string into Spacy Span objects.
-
-        Arguments:
-            text {str} -- a string
-
-        Returns:
-            {List[spacy.tokens.Span]} -- list of Spacy tokenised sentences
+        Yields:
+            {str} -- a formatted line
         """
 
-        doc = self._nlp(line)
-        return doc.sents
+        with open(self._filepath, 'r') as f:
+            for line in f:
+                yield self._formatter.format(line)
+
+    def _tokenise(self):
+        """Use the Spacy tokeniser to split
+        lines into lists of Spacy Span objects.
+
+        Yields:
+            {List[spacy.tokens.Span]} --
+                a list of Spacy tokenised sentences
+        """
+
+        lines = self._line_iter()
+        for sent in tqdm(self._nlp.pipe(lines)):
+            yield [span for span in sent]
 
     def __iter__(self):
-        for sentence in self._sentences:
+        for sentence in self._tokenise():
             yield sentence
-
-    @property
-    def sentences(self):
-        return self._sentences

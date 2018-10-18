@@ -1,3 +1,5 @@
+"""Main logic"""
+
 import os
 import sys
 import json
@@ -5,16 +7,17 @@ import argparse
 
 from tagger import Tagger
 from converter import Converter
-from extracter import Extracter
+from extractor import Extractor
 
 from utils import get_class, hyponyms
 
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("-m", "--measurement_type", default="d", choices=["d", "t", "m"],
+    parser.add_argument("-m", "--measurement_type", default="d", choices=["d", "t", "m", "e", "v"],
                         help="Type of measurement to tag (default = distance)")
-    parser.add_argument("-t", "--text", help="Name of text file to tag")
+    parser.add_argument(
+        "-t", "--text", help="Name of text file to tag (required)", required=True)
     parser.add_argument("--return_unconverted", action="store_true",
                         help="Return measurements that have not been normalised")
 
@@ -38,9 +41,9 @@ def main():
     tags = hyponyms(m["synset"])
     tagger = Tagger(tags, m["right_mods"])
 
-    extracter = Extracter(path, tagger, formatter, converter)
-    extracter.extract()
-    print(extracter)
+    extractor = Extractor(path, tagger, formatter, converter)
+    extractor.extract()
+    print(extractor)
 
 
 if __name__ == "__main__":
