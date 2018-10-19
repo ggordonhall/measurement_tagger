@@ -5,11 +5,11 @@ import sys
 import json
 import argparse
 
-from tagger import Tagger
-from converter import Converter
-from extractor import Extractor
+from modules.tagger import Tagger
+from modules.converter import Converter
+from modules.extractor import Extractor
 
-from utils import get_class, hyponyms
+from modules.utils import get_class, hyponyms
 
 
 def main():
@@ -28,7 +28,7 @@ def main():
                         help="The number of cores (default = 3)")
 
     args = parser.parse_args()
-    params_path = os.path.join(os.getcwd(), "params.json")
+    params_path = os.path.join(os.getcwd(), "modules/params.json")
     params = json.load(open(params_path, "r"))
 
     name = args.text
@@ -42,7 +42,7 @@ def main():
         sys.exit()
 
     container = get_class("measurement.measures", m["container"])
-    formatter = get_class("formatter", m["formatter"])
+    formatter = get_class("modules.formatter", m["formatter"])
     converter = Converter(container, args.return_unconverted)
 
     tags = m["tags"]
@@ -58,8 +58,8 @@ def main():
     else:
         extractor = Extractor(path, tagger, formatter, converter)
 
-    extractor.extract()
-    print(extractor)
+    for measure in extractor.extract():
+        print(' '.join(measure))
 
 
 if __name__ == "__main__":

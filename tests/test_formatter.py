@@ -1,6 +1,6 @@
 import pytest
 
-from .. import formatter
+from ..modules import formatter
 
 
 formatter_obj = formatter.DistanceFormatter()

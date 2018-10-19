@@ -1,10 +1,10 @@
 import pytest
 import spacy
 
-from .. import loader, formatter
+from ..modules import loader, formatter
 
 
-filepath = 'text/measurements.txt'
+filepath = '..text/measurements.txt'
 loader = loader.SentenceLoader(formatter.DistanceFormatter(), filepath)
 
 
@@ -17,5 +17,5 @@ def test_loaderlines():
     with open(filepath) as f:
         lines = f.readlines()
     line_length = len(lines)
-    loader_length = len(loader.sentences)
+    loader_length = len([l for l in loader])
     assert loader_length == line_length

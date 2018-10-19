@@ -1,16 +1,16 @@
 import pytest
 
-from .. import tagger
-from ..tagger import hyponyms
-
-
-tagger = tagger.DistanceTagger()
+from ..modules import tagger
+from ..modules.utils import hyponyms
 
 
 def test_hyponyms():
     assert 'cab' in hyponyms('car.n.01')
     with pytest.raises(ValueError):
         hyponyms('fgdfg')
+
+
+tagger = tagger.Tagger(hyponyms('linear_unit.n.01'), {})
 
 
 def test_distance_tags():

@@ -1,6 +1,6 @@
 """Converter class"""
 
-from utils import two_round
+from modules.utils import two_round
 
 
 class Converter:
@@ -29,21 +29,18 @@ class Converter:
         Arguments:
             measurements {List[Tuple[str, str]]} -- (value, unit) list
 
-        Returns:
-            {List[Tuple[str, str]]} -- standard (value, unit) list
+        Yields:
+            {Tuple[str, str]} -- (value, unit) pairs
         """
 
-        converted = []
         for measure in measurements:
             value, unit = measure
             try:
                 value = self._container.default_units({unit: value})[0]
                 conv_measure = (two_round(value), self._standard_unit)
-                converted.append(conv_measure)
+                yield conv_measure
             except (ValueError, AttributeError):
                 if self._return_unconverted:
-                    converted.append(measure)
+                    yield measure
                 else:
                     pass
-
-        return converted

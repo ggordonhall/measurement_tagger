@@ -1,7 +1,7 @@
 """Sentence formatter"""
 
 import re
-from utils import flatten, map_funcs, strip_list
+from modules.utils import flatten, map_funcs, strip_list
 
 
 class Formatter:

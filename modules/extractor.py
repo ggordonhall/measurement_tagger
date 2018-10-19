@@ -1,8 +1,8 @@
 """Extractor pipeline"""
 
 import os
-from loader import SentenceLoader
-from loader import ParallelLoader
+from modules.loader import SentenceLoader
+from modules.loader import ParallelLoader
 
 
 class Extractor:
@@ -36,17 +36,15 @@ class Extractor:
         else:
             self._sentences = SentenceLoader(formatter, path)
 
-        self._extracted = []
-
     def extract(self):
-        """Extract measurements from each sentence text file."""
+        """Extract measurements from each sentence text file.
+
+        Yields:
+            {Tuple[str, str]} -- (value, unit) pairs
+        """
 
         for sent in self._sentences:
             measures = self._tagger.tag(sent)
             if measures:
-                converted = self._converter.convert(measures)
-                self._extracted.extend(converted)
-
-    def __repr__(self):
-        unpack = [' '.join(m) for m in self._extracted]
-        return '\n'.join(unpack)
+                for measure in self._converter.convert(measures):
+                    yield measure

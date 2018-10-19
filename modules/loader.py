@@ -2,11 +2,10 @@
 
 import spacy
 from tqdm import tqdm
-
 from toolz import partition_all
 from joblib import Parallel, delayed
 
-from utils import flatten
+from modules.utils import flatten
 
 
 NLP = spacy.load('en', disable=['tagger', 'ner'])

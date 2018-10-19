@@ -1,6 +1,6 @@
 import pytest
 
-from .. import converter
+from ..modules import converter
 from measurement.measures import Distance
 
 
