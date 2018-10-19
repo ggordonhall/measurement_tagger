@@ -6,8 +6,6 @@ from importlib import import_module
 
 from typing import List, Any, Callable
 
-from nltk.corpus import wordnet as wn
-
 
 def map_funcs(obj: str, func_list: List[Callable]) -> str:
     """Apply series of functions to string"""
@@ -50,6 +48,8 @@ def hyponyms(synset_name):
     Returns:
         {Set[str]} -- set of hyponyms
     """
+    from nltk.corpus import wordnet as wn
+
     synset = wn.synset(synset_name)
     hypos = list(synset.closure(lambda s: s.hyponyms()))
     return set(flatten([synset.lemma_names() for synset in hypos]))

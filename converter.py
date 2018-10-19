@@ -14,6 +14,9 @@ class Converter:
         Arguments:
             measurement_container {measurement.measures} --
                 measurement container from the Python `measurement' library
+            return_unconverted {bool} --
+                return measurements which cannot be converted to standard form
+                (default = False)
         """
 
         self._container = measurement_container
