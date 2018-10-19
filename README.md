@@ -4,6 +4,7 @@
 Text to be tagged should be stored in the `text/` directory. The file to tag is specific with `-t`.
 
 Run in mode (`-m`):
+
     `d`: Distance
     `t`: Time
     `m`: Mass
@@ -13,3 +14,8 @@ Run in mode (`-m`):
 By default, tags measurements then convertes them to their standard unit. Unconverted measurements can be returned if run with the `--return_unconverted` flag.
 
 Run `pipenv install && python -m spacy download en` to setup, then test by running `main.py -m d -t wiki.txt`.
+
+## TO DO
+
+- [ ] Fix `--parallel` flag
+- [ ] Improve handling of n-gram measurement units
