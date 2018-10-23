@@ -5,11 +5,11 @@ Text to be tagged should be stored in the `text/` directory. The file to tag is 
 
 Run in mode (`-m`):
 
-    `d`: Distance
-    `t`: Time
-    `m`: Mass
-    `e`: Energy
-    `v`: Volume
+    d: Distance
+    t: Time
+    m: Mass
+    e: Energy
+    v: Volume
 
 By default, tags measurements then convertes them to their standard unit. Unconverted measurements can be returned if run with the `--return_unconverted` flag.
 
