@@ -1,11 +1,10 @@
 """Sentence iterator"""
 
 import spacy
-from tqdm import tqdm
 from toolz import partition_all
 from joblib import Parallel, delayed
 
-from modules.utils import flatten
+from .utils import flatten
 
 
 NLP = spacy.load('en', disable=['tagger', 'ner'])
@@ -63,7 +62,7 @@ class SentenceLoader(AbstractLoader):
         """
 
         lines = self._line_iter()
-        for sent in tqdm(NLP.pipe(lines)):
+        for sent in NLP.pipe(lines):
             yield [span for span in sent]
 
 

@@ -1,6 +1,7 @@
 """Converter class"""
 
-from modules.utils import two_round
+from .utils import two_round
+from .utils import Measurement
 
 
 class Converter:
@@ -24,21 +25,21 @@ class Converter:
         self._return_unconverted = return_unconverted
 
     def convert(self, measurements):
-        """Convert list of measurements (value, unit) to standard form.
+        """Convert list of ``Measurement`` (value, unit) to standard form.
 
         Arguments:
-            measurements {List[Tuple[str, str]]} -- (value, unit) list
+            measurements {List[Measurement]]} -- ``Measurement`` list
 
         Yields:
-            {Tuple[str, str]} -- (value, unit) pairs
+            {Measurement} --
+                ``Measurement`` class containing (value, unit) pairs
         """
 
         for measure in measurements:
-            value, unit = measure
             try:
-                value = self._container.default_units({unit: value})[0]
-                conv_measure = (two_round(value), self._standard_unit)
-                yield conv_measure
+                val = self._container.default_units(
+                    {measure.unit: measure.value})[0]
+                yield Measurement(two_round(val), self._standard_unit)
             except (ValueError, AttributeError):
                 if self._return_unconverted:
                     yield measure

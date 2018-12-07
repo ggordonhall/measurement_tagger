@@ -1,8 +1,8 @@
 """Extractor pipeline"""
 
 import os
-from modules.loader import SentenceLoader
-from modules.loader import ParallelLoader
+from .loader import SentenceLoader
+from .loader import ParallelLoader
 
 
 class Extractor:
@@ -40,7 +40,8 @@ class Extractor:
         """Extract measurements from each sentence text file.
 
         Yields:
-            {Tuple[str, str]} -- (value, unit) pairs
+            {Measurement} --
+                ``Measurement`` class containing (value, unit) pairs
         """
 
         for sent in self._sentences:

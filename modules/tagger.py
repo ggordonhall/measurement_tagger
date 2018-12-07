@@ -1,17 +1,24 @@
 """Tagging class"""
 
+from .utils import ints
+from .utils import join
+from .utils import overlapping
+from .utils import Measurement
+
 
 class Tagger:
     """Use the WordNet graph to extract measurements.
 
     Arguments:
-        tags: {Set[str]} -- lemma tags to match
-        right_mod_tokens: {Dict[str, str]} --
+        tags: {Set[str]} - - lemma tags to match
+        max_gram: {int} - - maximum n-gram unit to match
+        right_mod_tokens: {Dict[str, str]} - -
             tokens mapped to their corresponding right modifier
     """
 
-    def __init__(self, tags, right_mod_tokens):
+    def __init__(self, tags, max_gram, right_mod_tokens):
         self._tags = tags
+        self._max_gram = max_gram
         self._right_mod_tokens = right_mod_tokens
         self._dep_modifiers = frozenset(['nummod', 'quantmod'])
 
@@ -22,39 +29,54 @@ class Tagger:
             sentence {List[spacy.tokens.Span]} - - a tokenised sentence
 
         Returns:
-            {Optional[List[Tuple[str, str]]]} - -
-                a list of tuples of(numerical modifiers and tokens) or None
+            {Optional[List[Measurement]]} - -
+                a list of ``Measurement`` or ``None``
         """
 
         measurements = []
-        for token in sentence:
-            if token.lemma_ in self._tags:
-                modifier = self._measurements(token)
-                if modifier:
-                    measurements.extend(modifier)
+        # iterate over sentence in decreasing n-grams
+        for n in reversed(ints(1, self._max_gram)):
+            for idx, n_gram in enumerate(overlapping(sentence, n)):
+                # check if subset is a valid measurement
+                subset = join([tok.lemma_ for tok in n_gram])
+                if subset in self._tags:
+                    token = n_gram[-1]
+                    # find numerical modifier on last token in subset
+                    modifier = self._measurements(token, subset)
+                    if modifier:
+                        measurements.extend(modifier)
+                        # delete subset so it is ignored by
+                        # subsequent n-gram iterations
+                        del sentence[idx: min(idx + n, len(sentence) - 1)]
+
         return measurements if measurements else None
 
-    def _measurements(self, token):
+    def _measurements(self, token, unit):
         """Given a token, gets its modifiers to its left and right.
+
+        Right modifiers are only supported for uni-gram units of
+        measurement.
 
         Arguments:
             token {spacy.tokens.Token} - - a measurement Token
+            unit {str} - - string representation of the measurement
 
         Returns:
-            {Optional[List[[Tuple[str, str]]} - -
-                a list of(numerical modifier and the token) or None
+            {Optional[List[Measurement]]} - -
+                a list of ``Measurement`` or None
         """
 
         modifiers = []
         left_mod = self._find_mod('l', token)
         if left_mod:
-            modifiers.append((left_mod, token.lemma_))
+            modifiers.append(Measurement(left_mod, unit))
         # check if token could have numerical modifier to its right
         if token.lemma_ in self._right_mod_tokens.keys():
             right_mod = self._find_mod('r', token)
             if right_mod:
-                modifiers.append(
-                    (right_mod, self._right_mod_tokens[token.lemma_]))
+                r_measure = Measurement(
+                    right_mod, self._right_mod_tokens[token.lemma_])
+                modifiers.append(r_measure)
         return modifiers
 
     def _find_mod(self, direction, token):

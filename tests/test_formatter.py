@@ -39,7 +39,7 @@ def test_format():
     assert format_result == "3 foot 7"
     format_result = formatter_obj.format(
         "I am 3'7\" and I live 5,000 miles from here.")
-    assert format_result == "I am 3 foot 7 inch and I live 5000 miles from here."
+    assert format_result == "i am 3 foot 7 inch and i live 5000 miles from here."
     format_result = formatter_obj.format("55miles away 2times")
     assert format_result == "55 miles away 2 times"
     format_result = formatter_obj.format("(3'7)")

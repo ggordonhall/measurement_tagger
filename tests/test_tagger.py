@@ -10,11 +10,11 @@ def test_hyponyms():
         hyponyms('fgdfg')
 
 
-tagger = tagger.Tagger(hyponyms('linear_unit.n.01'), {})
+tagger = tagger.Tagger(hyponyms('linear_unit.n.01'), 2, {})
 
 
 def test_distance_tags():
     assert 'inch' in tagger._tags
     assert 'mile' in tagger._tags
-    assert 'cubic_meter' not in tagger._tags
+    assert 'cubic meter' not in tagger._tags
     assert 'joule' not in tagger._tags

@@ -3,8 +3,21 @@
 from functools import reduce
 from itertools import chain
 from importlib import import_module
+from collections.abc import Sequence
 
-from typing import List, Any, Callable
+from dataclasses import dataclass
+
+from typing import List, Any, Callable, Iterable, Iterator
+
+
+@dataclass(frozen=True)
+class Measurement:
+    """Dataclass containing measurement value and unit"""
+    value: str
+    unit: str
+
+    def __str__(self):
+        return f"{self.value} {self.unit}"
 
 
 def map_funcs(obj: str, func_list: List[Callable]) -> str:
@@ -17,9 +30,25 @@ def lower(lst: List[str]) -> List[str]:
     return [s.lower() for s in lst]
 
 
+def join(iterable: Iterable, sep: str = " ") -> str:
+    """Join an interable with sep"""
+    return sep.join(map(str, iterable))
+
+
+def ints(start: int, end: int) -> Iterator:
+    """The integers from start to end, inclusive"""
+    return range(start, end + 1)
+
+
 def flatten(list_of_lists: List[List[Any]]) -> List[Any]:
     """Flatten a list of lists"""
     return list(chain.from_iterable(list_of_lists))
+
+
+def overlapping(iterable: Iterable, n: int) -> Iterator:
+    """Generate all (overlapping) n-element subsequences of iterable"""
+    assert isinstance(iterable, Sequence)
+    yield from (iterable[i: i + n] for i in range(len(iterable) + 1 - n))
 
 
 def strip_list(lst: List[str]) -> List[Any]:
@@ -52,4 +81,5 @@ def hyponyms(synset_name):
 
     synset = wn.synset(synset_name)
     hypos = list(synset.closure(lambda s: s.hyponyms()))
-    return set(flatten([synset.lemma_names() for synset in hypos]))
+    lemmas = flatten([synset.lemma_names() for synset in hypos])
+    return {l.replace("_", " ") for l in lemmas}

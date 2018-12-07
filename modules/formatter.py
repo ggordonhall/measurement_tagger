@@ -1,7 +1,11 @@
 """Sentence formatter"""
 
 import re
-from modules.utils import flatten, map_funcs, strip_list
+
+from .utils import join
+from .utils import flatten
+from .utils import map_funcs
+from .utils import strip_list
 
 
 class Formatter:
@@ -13,10 +17,8 @@ class Formatter:
     def format(self, line):
         """Format line of text for tagging.
         Apply specialised replacement functions.
-
         Arguments:
             line {str} -- unmodified line
-
         Returns:
             line {str} -- formatted line
         """
@@ -24,14 +26,14 @@ class Formatter:
         split_toks = flatten([split_numerals(tok) for tok in tokens])
         replace_toks = [map_funcs(tok, self._replace_funcs)
                         for tok in split_toks]
-        return ' '.join(replace_toks)
+        return join(replace_toks)
 
 
 class DistanceFormatter(Formatter):
     """Format text for distance tagging."""
 
     def __init__(self):
-        super(DistanceFormatter, self).__init__()
+        super().__init__()
         self._replace_funcs = [remove_commas,
                                replace_feet_inches,
                                replace_ft]
@@ -41,7 +43,7 @@ class MassFormatter(Formatter):
     """Format text for mass tagging."""
 
     def __init__(self):
-        super(MassFormatter, self).__init__()
+        super().__init__()
         self._replace_funcs = [remove_commas]
 
 
@@ -49,7 +51,7 @@ class TimeFormatter(Formatter):
     """Format text for time tagging."""
 
     def __init__(self):
-        super(TimeFormatter, self).__init__()
+        super().__init__()
         self._replace_funcs = [remove_commas,
                                remove_quarter,
                                remove_moon]
@@ -59,7 +61,7 @@ class VolumeFormatter(Formatter):
     """Format text for volume tagging."""
 
     def __init__(self):
-        super(VolumeFormatter, self).__init__()
+        super().__init__()
         self._replace_funcs = [remove_commas,
                                remove_quarter]
 
@@ -68,7 +70,7 @@ class EnergyFormatter(Formatter):
     """Format text for energy tagging."""
 
     def __init__(self):
-        super(EnergyFormatter, self).__init__()
+        super().__init__()
         self._replace_funcs = [remove_commas]
 
 
@@ -77,10 +79,8 @@ class EnergyFormatter(Formatter):
 def split_numerals(token):
     """Split conjoined alphanumeric strings.
     e.g. "aa1" -> ["aa", "1"]
-
     Arguments:
         token {str} -- a string to split
-
     Returns:
         {List[str]} -- a list of split strings
     """
@@ -93,10 +93,8 @@ def split_numerals(token):
 def remove_commas(token):
     """Remove commas in numbers.
     e.g. "5,000" -> "5000"
-
     Arguments:
         token {str} -- a string
-
     Returns:
         {str} -- string without commas if
                it is numerical
@@ -113,10 +111,8 @@ def replace_feet_inches(token):
     """Replace punctuations marks for feet and inches with words.
     e.g. 5'7" -> 5 foot 7 inch
         3' -> 3 foot
-
     Arguements:
         token {str} -- a string to replace
-
     Returns:
         {str} -- a replaced string
     """
@@ -133,10 +129,8 @@ def replace_feet_inches(token):
 def replace_ft(token):
     """Normalise ft tokens.
     e.g. "ft" -> "foot"
-
     Arguments:
         token {str} -- a string to replace
-
     Returns:
         {str} -- a replaced string
     """
@@ -148,10 +142,8 @@ def replace_ft(token):
 def remove_moon(token):
     """Remove `moon`, an archaic unit
     of time which confuses the tagger.
-
     Arguments:
         token {str} -- a string to replace
-
     Returns:
         {str} -- a replaced string
     """
@@ -165,10 +157,8 @@ def remove_moon(token):
 def remove_quarter(token):
     """Remove `quarter`, a unit
     of volume or time which confuses the tagger.
-
     Arguments:
         token {str} -- a string to replace
-
     Returns:
         {str} -- a replaced string
     """

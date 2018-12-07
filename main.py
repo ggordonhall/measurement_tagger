@@ -9,7 +9,8 @@ from modules.tagger import Tagger
 from modules.converter import Converter
 from modules.extractor import Extractor
 
-from modules.utils import get_class, hyponyms
+from modules.utils import get_class
+from modules.utils import hyponyms
 
 
 def main():
@@ -18,6 +19,8 @@ def main():
                         help="Type of measurement to tag (default = distance)")
     parser.add_argument(
         "-t", "--text", help="Name of text file to tag (required)", required=True)
+    parser.add_argument("--max_gram", type=int, default=2,
+                        help="The maximum n-gram measurement unit to tag (default = 2)")
     parser.add_argument("--return_unconverted", action="store_true",
                         help="Return measurements that have not been normalised")
     parser.add_argument("--parallel", action="store_true",
@@ -50,7 +53,7 @@ def main():
         tags = hyponyms(m["synset"])
         params[args.measurement_type]["tags"] = list(tags)
         json.dump(params, open(params_path, "w"))
-    tagger = Tagger(tags, m["right_mods"])
+    tagger = Tagger(tags, args.max_gram, m["right_mods"])
 
     if args.parallel:
         extractor = Extractor(path, tagger, formatter,
@@ -59,7 +62,7 @@ def main():
         extractor = Extractor(path, tagger, formatter, converter)
 
     for measure in extractor.extract():
-        print(' '.join(measure))
+        print(measure)
 
 
 if __name__ == "__main__":
