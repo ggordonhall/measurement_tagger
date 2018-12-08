@@ -1,0 +1,10 @@
+language: python
+python:
+  - "3.7"
+cache: pip
+install:
+  - pipenv install --dev
+script:
+  - py.test tests/ --cov=codecov
+after_success:
+  - bash < (curl -s https://codecov.io/bash) -t 18dafcea-7f7a-49aa-8bc8-84d6aae9c9bb || echo 'Codecov failed to upload'
