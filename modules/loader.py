@@ -7,7 +7,7 @@ from joblib import Parallel, delayed
 from .utils import flatten
 
 
-NLP = spacy.load('en', disable=['tagger', 'ner'])
+NLP = spacy.load('en', disable=['tagger', 'ner', 'textcat'])
 
 
 class AbstractLoader:
@@ -95,10 +95,7 @@ def subprocess(nlp, part):
 
     Arguments:
         nlp {spacy.Pipe} -- a Spacy pipeline
-        part {} -- a batch of the dataset
+        part {Tuple[str]} -- a batch of the dataset
     """
 
-    tokenised_sents = []
-    for sent in nlp.pipe(part):
-        tokenised_sents.append([span for span in sent])
-    return tokenised_sents
+    return [[span for span in sent] for sent in nlp.pipe(part)]
