@@ -1,4 +1,7 @@
 # Measurement Tagger
+[![Build Status](https://travis-ci.org/ggordonhall/measurement_tagger.png)](https://travis-ci.org/ggordonhall/measurement_tagger)
+[![codecov](https://codecov.io/gh/ggordonhall/measurement_tagger/branch/master/graph/badge.svg)](https://codecov.io/gh/ggordonhall/measurement_tagger)
+
 ## A dependency parse based measurement tagger.
 
 Text to be tagged should be stored in the `text/` directory. The file to tag is specific with `-t`.

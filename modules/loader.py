@@ -30,15 +30,13 @@ class AbstractLoader:
         """
 
         with open(self._filepath, 'r') as f:
-            for line in f:
-                yield self._formatter.format(line)
+            yield from (self._formatter.format(line) for line in f)
 
     def _tokenise(self):
         raise NotImplementedError
 
     def __iter__(self):
-        for sentence in self._tokenise():
-            yield sentence
+        yield from self._tokenise()
 
 
 class SentenceLoader(AbstractLoader):

@@ -77,6 +77,7 @@ class Tagger:
                 r_measure = Measurement(
                     right_mod, self._right_mod_tokens[token.lemma_])
                 modifiers.append(r_measure)
+
         return modifiers
 
     def _find_mod(self, direction, token):

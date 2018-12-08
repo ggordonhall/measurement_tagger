@@ -47,5 +47,4 @@ class Extractor:
         for sent in self._sentences:
             measures = self._tagger.tag(sent)
             if measures:
-                for measure in self._converter.convert(measures):
-                    yield measure
+                yield from self._converter.convert(measures)
