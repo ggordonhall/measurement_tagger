@@ -51,7 +51,7 @@ def overlapping(iterable: Iterable, n: int) -> Iterator:
     yield from (iterable[i: i + n] for i in range(len(iterable) + 1 - n))
 
 
-def strip_list(lst: List[str]) -> List[Any]:
+def strip_list(lst: List[str]) -> List[str]:
     """Strip whitespace from list of strings"""
     return [l.strip() for l in lst if l is not None]
 

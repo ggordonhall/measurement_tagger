@@ -7,6 +7,8 @@ name = "pypi"
 nltk = "*"
 spacy = "*"
 measurement = "*"
+cytoolz = "*"
+joblib = "*"
 
 [dev-packages]
 autopep8 = "*"

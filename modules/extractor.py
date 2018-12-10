@@ -16,7 +16,6 @@ class Extractor:
         tagger {Tagger} -- measurement tagging class
         formatter {Formatter} -- text formatting class
         converter {Converter} -- number conversion class
-
         parallel_opts {Tuple[int, int]} --
             options for parallel processing, (batch_size, n_jobs) pair.
             If None, loader is not run in parallel (default = None)

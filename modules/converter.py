@@ -25,10 +25,14 @@ class Converter:
         self._return_unconverted = return_unconverted
 
     def convert(self, measurements):
-        """Convert list of ``Measurement`` (value, unit) to standard form.
+        """Convert list of measurements to standard form. If a
+        measurement is a tuple, combine the units into a single
+        value:
+            (i.e. 3 foot 2 inch) -> 0.96 metres
 
         Arguments:
-            measurements {List[Measurement]]} -- ``Measurement`` list
+            measurements {List[Union[Measurement, Tuple[Measurement]]]} --
+                list of measurements
 
         Yields:
             {Measurement} --
@@ -37,11 +41,26 @@ class Converter:
 
         for measure in measurements:
             try:
-                val = self._container.default_units(
-                    {measure.unit: measure.value})[0]
+                if isinstance(measure, tuple):
+                    val = sum([self._standard(m) for m in measure])
+                else:
+                    val = self._standard(measure)
                 yield Measurement(two_round(val), self._standard_unit)
+
             except (ValueError, AttributeError):
                 if self._return_unconverted:
                     yield measure
                 else:
                     pass
+
+    def _standard(self, measure):
+        """Convert  ``Measurement`` to standard form.
+
+        Arguments:
+            measure {Measurement} -- a ``Measurement``
+
+        Returns:
+            {float} -- measurement value in standard form
+        """
+
+        return self._container.default_units({measure.unit: measure.value})[0]

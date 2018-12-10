@@ -10,9 +10,9 @@ class Tagger:
     """Use the WordNet graph to extract measurements.
 
     Arguments:
-        tags: {Set[str]} - - lemma tags to match
-        max_gram: {int} - - maximum n-gram unit to match
-        right_mod_tokens: {Dict[str, str]} - -
+        tags: {Set[str]} -- lemma tags to match
+        max_gram: {int} -- maximum n-gram unit to match
+        right_mod_tokens: {Dict[str, str]} --
             tokens mapped to their corresponding right modifier
     """
 
@@ -26,11 +26,11 @@ class Tagger:
         """Extract measurements from Spacy tokenised sentence.
 
         Arguments:
-            sentence {List[spacy.tokens.Span]} - - a tokenised sentence
+            sentence {List[spacy.tokens.Span]} -- a tokenised sentence
 
         Returns:
-            {Optional[List[Measurement]]} - -
-                a list of ``Measurement`` or ``None``
+            {Optional[List[Union[Measurement, Tuple[Measurement]]]]} --
+                a list of measurements or ``None``
         """
 
         measurements = []
@@ -40,11 +40,10 @@ class Tagger:
                 # check if subset is a valid measurement
                 subset = join([tok.lemma_ for tok in n_gram])
                 if subset in self._tags:
-                    token = n_gram[-1]
                     # find numerical modifier on last token in subset
-                    modifier = self._measurements(token, subset)
-                    if modifier:
-                        measurements.extend(modifier)
+                    measure = self._measurements(n_gram[-1], subset)
+                    if measure:
+                        measurements.append(measure)
                         # delete subset so it is ignored by
                         # subsequent n-gram iterations
                         del sentence[idx: min(idx + n, len(sentence) - 1)]
@@ -52,45 +51,46 @@ class Tagger:
         return measurements if measurements else None
 
     def _measurements(self, token, unit):
-        """Given a token, gets its modifiers to its left and right.
+        """Given a token, get its left and right modifiers and
+        construct a ``Measurement`` class. Tokens with left and right
+        modifiers are returned as a tuple of ``Measurement``.
 
         Right modifiers are only supported for uni-gram units of
         measurement.
 
         Arguments:
-            token {spacy.tokens.Token} - - a measurement Token
-            unit {str} - - string representation of the measurement
+            token {spacy.tokens.Token} -- a measurement Token
+            unit {str} -- string representation of the measurement
 
         Returns:
-            {Optional[List[Measurement]]} - -
-                a list of ``Measurement`` or None
+            {Optional[Union[Measurement, Tuple[Measurement]]]} --
+                measurement or None
         """
 
-        modifiers = []
         left_mod = self._find_mod('l', token)
         if left_mod:
-            modifiers.append(Measurement(left_mod, unit))
+            l_measure = Measurement(left_mod, unit)
         # check if token could have numerical modifier to its right
         if token.lemma_ in self._right_mod_tokens.keys():
             right_mod = self._find_mod('r', token)
             if right_mod:
-                r_measure = Measurement(
-                    right_mod, self._right_mod_tokens[token.lemma_])
-                modifiers.append(r_measure)
+                r_unit = self._right_mod_tokens[token.lemma_]
+                r_measure = Measurement(right_mod, r_unit)
+                return (l_measure, r_measure)
 
-        return modifiers
+        return l_measure
 
     def _find_mod(self, direction, token):
         """Given a token, search the dependency tree towards 'direction'
         for its numerical modifier.
 
         Arguments:
-            token {spacy.tokens.Token} - - a measurement Token
-            direction {Union['l', 'r']} - -
+            token {spacy.tokens.Token} -- a measurement Token
+            direction {Union['l', 'r']} --
                 the direction to search the tree (left, right)
 
         Returns:
-            {Optional[str]} - - the modifier's lemma
+            {Optional[str]} -- the modifier's lemma
         """
 
         children = token.lefts if direction == 'l' else token.rights

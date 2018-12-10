@@ -17,8 +17,10 @@ class Formatter:
     def format(self, line):
         """Format line of text for tagging.
         Apply specialised replacement functions.
+
         Arguments:
             line {str} -- unmodified line
+
         Returns:
             line {str} -- formatted line
         """
@@ -79,8 +81,10 @@ class EnergyFormatter(Formatter):
 def split_numerals(token):
     """Split conjoined alphanumeric strings.
     e.g. "aa1" -> ["aa", "1"]
+
     Arguments:
         token {str} -- a string to split
+
     Returns:
         {List[str]} -- a list of split strings
     """
@@ -93,8 +97,10 @@ def split_numerals(token):
 def remove_commas(token):
     """Remove commas in numbers.
     e.g. "5,000" -> "5000"
+
     Arguments:
         token {str} -- a string
+
     Returns:
         {str} -- string without commas if
                it is numerical
@@ -111,8 +117,10 @@ def replace_feet_inches(token):
     """Replace punctuations marks for feet and inches with words.
     e.g. 5'7" -> 5 foot 7 inch
         3' -> 3 foot
+
     Arguements:
         token {str} -- a string to replace
+
     Returns:
         {str} -- a replaced string
     """
@@ -129,8 +137,10 @@ def replace_feet_inches(token):
 def replace_ft(token):
     """Normalise ft tokens.
     e.g. "ft" -> "foot"
+
     Arguments:
         token {str} -- a string to replace
+
     Returns:
         {str} -- a replaced string
     """
@@ -142,8 +152,10 @@ def replace_ft(token):
 def remove_moon(token):
     """Remove `moon`, an archaic unit
     of time which confuses the tagger.
+
     Arguments:
         token {str} -- a string to replace
+
     Returns:
         {str} -- a replaced string
     """
@@ -157,8 +169,10 @@ def remove_moon(token):
 def remove_quarter(token):
     """Remove `quarter`, a unit
     of volume or time which confuses the tagger.
+
     Arguments:
         token {str} -- a string to replace
+
     Returns:
         {str} -- a replaced string
     """

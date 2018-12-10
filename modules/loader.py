@@ -1,7 +1,7 @@
 """Sentence iterator"""
 
 import spacy
-from toolz import partition_all
+from cytoolz import partition_all
 from joblib import Parallel, delayed
 
 from .utils import flatten
