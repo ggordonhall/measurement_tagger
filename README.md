@@ -19,7 +19,7 @@ Run in mode (`-m`):
 By default, tags measurements then convertes them to their standard unit. Unconverted measurements can be returned if run with the `--return_unconverted` flag. The maximum n-gram to search for measurement units, i.e. `nautical miles`, can be set with the 
 `--max_gram` flag.
 
-Run `pipenv install && python -m spacy download en` to setup, then test by running `main.py -m d -t wiki.txt`.
+Run `pipenv install && python -m spacy download en && python -m nltk.downloader wordnet` to setup, then test by running `main.py -m d -t wiki.txt`.
 
 ## TO DO
 

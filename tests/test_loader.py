@@ -5,13 +5,14 @@ from ..modules import loader
 from ..modules import formatter
 
 
-filepath = 'text/measurements.txt'
+filepath = "tests/test.txt"
 loader = loader.SentenceLoader(formatter.DistanceFormatter(), filepath)
 
 
 def test_loadertype():
     for sentence in loader:
-        assert isinstance(sentence[0], spacy.tokens.Token)
+        if sentence:
+            assert isinstance(sentence[0], spacy.tokens.Token)
 
 
 def test_loaderlines():

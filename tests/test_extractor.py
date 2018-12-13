@@ -23,8 +23,6 @@ extractor_obj = extractor.Extractor(path, tagger, formatter, converter)
 
 
 def test_extractor():
-    pred_extracted = set([Measurement("8046.72", "m"), Measurement("1.83", "m"),
-                          Measurement("0.18", "m"), Measurement(
-                              "1.83", "m"), Measurement("0.25", "m"),
-                          Measurement("4023.36", "m"), Measurement("10972.8", "m")])
+    pred_extracted = set([Measurement("8046.72", "m"), Measurement("2.01", "m"),
+                          Measurement("2.08", "m")])
     assert set(extractor_obj.extract()) == pred_extracted
