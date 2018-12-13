@@ -9,6 +9,6 @@ install:
   - python -m spacy download en
   - python -m nltk.downloader wordnet
 script:
-  - py.test tests/ --cov=codecov
+  - py.test tests/ --cov=measurement_tagger
 after_success:
   - bash < (curl -s https://codecov.io/bash) -t 18dafcea-7f7a-49aa-8bc8-84d6aae9c9bb || echo 'Codecov failed to upload'
