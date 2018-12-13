@@ -2,10 +2,11 @@ sudo: required
 dist: xenial
 language: python
 python:
-  - '3.7'
+  - '3.7.0'
 cache: pip
 install:
   - pipenv install --dev
+  - python -m spacy download en
 script:
   - py.test tests/ --cov=codecov
 after_success:
