@@ -1,7 +1,9 @@
 import pytest
+import spacy
 
 from ..modules import tagger
 from ..modules.utils import hyponyms
+from ..modules.utils import Measurement
 
 
 def test_hyponyms():

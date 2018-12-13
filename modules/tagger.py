@@ -29,8 +29,8 @@ class Tagger:
             sentence {List[spacy.tokens.Span]} -- a tokenised sentence
 
         Returns:
-            {Optional[List[Union[Measurement, Tuple[Measurement]]]]} --
-                a list of measurements or ``None``
+            {List[Union[Measurement, Tuple[Measurement]]]} --
+                a list of measurements
         """
 
         measurements = []
@@ -47,8 +47,7 @@ class Tagger:
                         # delete subset so it is ignored by
                         # subsequent n-gram iterations
                         del sentence[idx: min(idx + n, len(sentence) - 1)]
-
-        return measurements if measurements else None
+        return measurements
 
     def _measurements(self, token, unit):
         """Given a token, get its left and right modifiers and
@@ -70,15 +69,15 @@ class Tagger:
         left_mod = self._find_mod('l', token)
         if left_mod:
             l_measure = Measurement(left_mod, unit)
-        # check if token could have numerical modifier to its right
-        if token.lemma_ in self._right_mod_tokens.keys():
-            right_mod = self._find_mod('r', token)
-            if right_mod:
-                r_unit = self._right_mod_tokens[token.lemma_]
-                r_measure = Measurement(right_mod, r_unit)
-                return (l_measure, r_measure)
-
-        return l_measure
+            # check if token could have numerical modifier to its right
+            if token.lemma_ in self._right_mod_tokens.keys():
+                right_mod = self._find_mod('r', token)
+                if right_mod:
+                    r_unit = self._right_mod_tokens[token.lemma_]
+                    r_measure = Measurement(right_mod, r_unit)
+                    return (l_measure, r_measure)
+            return l_measure
+        return None
 
     def _find_mod(self, direction, token):
         """Given a token, search the dependency tree towards 'direction'
@@ -90,7 +89,7 @@ class Tagger:
                 the direction to search the tree (left, right)
 
         Returns:
-            {Optional[str]} -- the modifier's lemma
+            {Optional[str]} -- the modifier's lemma or None
         """
 
         children = token.lefts if direction == 'l' else token.rights

@@ -35,16 +35,16 @@ class Converter:
                 list of measurements
 
         Yields:
-            {Measurement} --
-                ``Measurement`` class containing (value, unit) pairs
+            {Union[Measurement, Tuple[Measurement]]} --
+                a converted measurement
         """
 
         for measure in measurements:
             try:
                 if isinstance(measure, tuple):
-                    val = sum([self._standard(m) for m in measure])
+                    val = sum(map(self._std, measure))
                 else:
-                    val = self._standard(measure)
+                    val = self._std(measure)
                 yield Measurement(two_round(val), self._standard_unit)
 
             except (ValueError, AttributeError):
@@ -53,7 +53,7 @@ class Converter:
                 else:
                     pass
 
-    def _standard(self, measure):
+    def _std(self, measure):
         """Convert  ``Measurement`` to standard form.
 
         Arguments:

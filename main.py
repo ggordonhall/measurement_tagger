@@ -9,8 +9,9 @@ from modules.tagger import Tagger
 from modules.converter import Converter
 from modules.extractor import Extractor
 
-from modules.utils import get_class
+from modules.utils import join
 from modules.utils import hyponyms
+from modules.utils import get_class
 
 
 def main():
@@ -62,7 +63,7 @@ def main():
         extractor = Extractor(path, tagger, formatter, converter)
 
     for measure in extractor.extract():
-        print(measure)
+        print(join(measure) if isinstance(measure, tuple) else measure)
 
 
 if __name__ == "__main__":
